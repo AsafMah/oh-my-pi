@@ -144,6 +144,13 @@ describe("issue #1682: detectTerminalEagerEraseScrollbackRisk", () => {
 		expect(detectTerminalEagerEraseScrollbackRisk({ TERM_PROGRAM: "vscode", COLORTERM: "truecolor" }, "linux")).toBe(
 			false,
 		);
+		expect(detectTerminalEagerEraseScrollbackRisk({ VSCODE_PID: "1", COLORTERM: "truecolor" }, "linux")).toBe(false);
+		expect(
+			detectTerminalEagerEraseScrollbackRisk(
+				{ VSCODE_PID: "1", TERM_PROGRAM: "custom", COLORTERM: "truecolor" },
+				"linux",
+			),
+		).toBe(false);
 	});
 
 	it("stores fixed risk on known terminal traits", () => {

@@ -137,6 +137,7 @@ export function detectTerminalEagerEraseScrollbackRisk(
 	) {
 		return true;
 	}
+	if (env.VSCODE_PID) return false;
 	switch (env.TERM_PROGRAM?.toLowerCase()) {
 		case "alacritty":
 		case "apple_terminal":
