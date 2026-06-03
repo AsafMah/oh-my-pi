@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Deferred eager live scrollback rebuilds for Linux truecolor terminal sessions that lose `VTE_VERSION` across SSH, preserving readable scrollback on VTE/Ptyxis-style terminals during streaming output ([#1799](https://github.com/can1357/oh-my-pi/issues/1799)).
+
 ## [15.8.2] - 2026-06-03
 
 ### Added

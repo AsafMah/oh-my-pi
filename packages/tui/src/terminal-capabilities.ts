@@ -74,6 +74,12 @@ function parseMajorMinorVersion(versionRaw?: string): { major: number; minor: nu
 	return { major, minor };
 }
 
+function isTrueColorColorTerm(value: string | undefined): boolean {
+	if (!value) return false;
+	const normalized = value.toLowerCase();
+	return normalized === "truecolor" || normalized === "24bit";
+}
+
 /**
  * Returns true when running in Windows Terminal with known SIXEL support.
  *
@@ -137,11 +143,15 @@ export function detectTerminalEagerEraseScrollbackRisk(
 		case "ghostty":
 		case "iterm.app":
 		case "kitty":
+		case "ptyxis":
 		case "wezterm":
 			return true;
-		default:
+		case "vscode":
 			return false;
 	}
+	// SSH sessions commonly lose VTE_VERSION; on Linux, truecolor COLORTERM is
+	// the remaining VTE/Ptyxis signal and the safer failure mode is deferral.
+	return platform === "linux" && isTrueColorColorTerm(env.COLORTERM);
 }
 function getFallbackImageProtocol(terminalId: TerminalId): ImageProtocol | null {
 	if (!process.stdout.isTTY) return null;
@@ -200,9 +210,7 @@ export const TERMINAL_ID: TerminalId = (() => {
 
 	if (TERM?.toLowerCase().includes("ghostty")) return "ghostty";
 
-	if (COLORTERM) {
-		if (caseEq(COLORTERM, "truecolor") || caseEq(COLORTERM, "24bit")) return "trueColor";
-	}
+	if (isTrueColorColorTerm(COLORTERM)) return "trueColor";
 	return "base";
 })();
 
